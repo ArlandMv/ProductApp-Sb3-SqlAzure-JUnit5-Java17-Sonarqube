@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    Product create(Product product);
+    Product createProduct(Product product);
 
     List<Product> getAllProducts();
 
     Optional<Product> getProductById(Long id);
 
-    //public Product updateProduct(Product updatedProduct);
     Product updateProduct(Product updatedProduct);
 
-    public void deleteById(Long id);
+    void deleteById(Long id);
 
 }

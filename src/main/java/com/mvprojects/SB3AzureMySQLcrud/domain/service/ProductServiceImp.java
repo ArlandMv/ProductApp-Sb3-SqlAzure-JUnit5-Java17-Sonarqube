@@ -14,12 +14,11 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ProductServiceImp implements ProductService {
-
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    public Product create(@Valid Product product) {
+    public Product createProduct(@Valid Product product) {
         return productRepository.save(product);
     }
 
@@ -55,6 +54,4 @@ public class ProductServiceImp implements ProductService {
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
-
-
 }

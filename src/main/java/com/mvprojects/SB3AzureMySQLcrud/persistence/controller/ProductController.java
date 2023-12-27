@@ -1,10 +1,10 @@
-package com.mvprojects.SB3AzureMySQLcrud.persistence.crud;
+package com.mvprojects.SB3AzureMySQLcrud.persistence.controller;
 
 import com.mvprojects.SB3AzureMySQLcrud.domain.service.ProductService;
-import com.mvprojects.SB3AzureMySQLcrud.exceptions.ResourceNotFoundException;
 import com.mvprojects.SB3AzureMySQLcrud.persistence.entity.Product;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +25,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        Product savedProduct = productService.create(product);
+        Product savedProduct = productService.createProduct(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
@@ -38,15 +38,12 @@ public class ProductController {
     //
     @GetMapping("{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") Long productID) {
-         Optional<Product> oProduct = productService.getProductById(productID);
-         return ResponseEntity.ok(oProduct.get()); //error cached by handler at service
-
-        /*
-         if (oProduct.isEmpty()){
-             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-         }
-         return new ResponseEntity<>(oProduct, HttpStatus.OK);
-         */
+        Optional<Product> oProduct = productService.getProductById(productID);
+        if (oProduct.isPresent()){
+            return ResponseEntity.ok(oProduct.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -63,10 +60,17 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
-    //@CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        productService.deleteById(id);
-        return ResponseEntity.noContent().build(); //204
+        try {
+            productService.deleteById(id);
+            return ResponseEntity.noContent().build(); //204
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();
+        }
+        /*productService.deleteById(id);
+        return ResponseEntity.noContent().build();  */
     }
+
+
 
 }
