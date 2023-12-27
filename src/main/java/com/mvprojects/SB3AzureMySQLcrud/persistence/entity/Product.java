@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-//@Builder
+@Builder
 @Entity
 @Table(name="products")
 @Validated
