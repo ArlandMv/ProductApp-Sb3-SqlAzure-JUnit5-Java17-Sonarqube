@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
 import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,12 +28,21 @@ public class Product {
     @Column(name="id_product")
     private Long  idProduct;
 
+    @NotBlank(message = "Product sku is required")
+    @Column(nullable = false)
+    private String sku;
+
     @NotBlank(message = "Product name is required")
     @Column(nullable = false)
     private String name;
 
+    private String description;
+
     @Positive(message = "Price must be a positive value")
-    private Double price;
+    private BigDecimal price;
+
+    @Column(name= "image_url")
+    private String imageUrl;
 
     @Column(name= "last_modified")
     @Temporal(TemporalType.TIMESTAMP)
@@ -42,8 +52,5 @@ public class Product {
     public void prePersist(){
         this.lastModified=new Date();
     }
-
-    //many to one email
-
 
 }

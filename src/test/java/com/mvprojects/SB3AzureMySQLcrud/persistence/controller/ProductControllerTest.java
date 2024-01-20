@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +51,8 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.builder().idProduct(1L).name("productX").price(1000.0).build();
-        product2 = Product.builder().idProduct(2L).name("productY").price(2000.0).build();
+        product = Product.builder().idProduct(1L).name("productX").price(new BigDecimal(1000)).build();
+        product2 = Product.builder().idProduct(2L).name("productY").price(new BigDecimal(2000)).build();
     }
 
     @Test
@@ -107,7 +108,7 @@ class ProductControllerTest {
         Product updatedProduct = Product.builder()
                 .idProduct(1L)
                 .name("Updated Product")
-                .price(20.0)
+                .price(new BigDecimal(20.0))
                 .build();
 
         BDDMockito.given(productService.updateProduct(any(Product.class)))
