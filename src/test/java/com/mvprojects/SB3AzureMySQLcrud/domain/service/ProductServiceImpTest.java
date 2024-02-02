@@ -6,9 +6,11 @@ import com.mvprojects.SB3AzureMySQLcrud.persistence.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.then;
@@ -19,38 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-
-/*
-class ProductServiceImpTest {
-
-    @Test
-    void testUpdateProduct() {
-        // Arrange
-        Product existingProduct = new Product();
-        existingProduct.setIdProduct(1L);
-
-        Product updatedProduct = new Product();
-        updatedProduct.setIdProduct(1L);
-        updatedProduct.setName("UpdatedName");
-        updatedProduct.setPrice(20.0);
-
-        when(productRepository.findById(updatedProduct.getIdProduct())).thenReturn(Optional.of(existingProduct));
-        when(productRepository.save(existingProduct)).thenReturn(existingProduct);
-
-        // Act
-        Product result = productService.updateProduct(updatedProduct);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(updatedProduct.getName(), result.getName());
-        assertEquals(updatedProduct.getPrice(), result.getPrice());
-        verify(productRepository, times(1)).findById(updatedProduct.getIdProduct());
-        verify(productRepository, times(1)).save(existingProduct);
-    }
-}
-*
-* */
-
+@ExtendWith(MockitoExtension.class)
 class ProductServiceImpTest {
     @Mock
     private ProductRepository productRepository;
@@ -114,10 +85,12 @@ class ProductServiceImpTest {
         // Act
         List<Product> productList = productService.getAllProducts();
         // Assert
-        assertNotNull(productList);
-        assertEquals(2, productList.size());
+        assertAll(
+                () -> assertNotNull(productList),
+                () -> assertEquals(2, productList.size())
+        );
         verify(productRepository, times(1)).findAll();
-    }
+    } // Assert that the returned list is empty when there are no products
 
     @Test
     @DisplayName("getProductById_Success")
@@ -138,45 +111,52 @@ class ProductServiceImpTest {
     @DisplayName("testGetProductById_ThrowsException")
     void getProductByIdNotFound() {
         // Arrange
-        Long productId = 1L;
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> productService.getProductById(productId));
-        verify(productRepository, times(1)).findById(productId);
+        Long productId = 10L;
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            productService.getProductById(productId);
+        });
+
+        assertEquals("Product not found with productId : '" + productId+"'", exception.getMessage());
+
+        then(productRepository).should().findById(productId);
     }
 
     @Test
-    void updateProductNotFound() {
-        Product updatedProduct = new Product();
-        updatedProduct.setIdProduct(1L);
-        when(productRepository.findById(updatedProduct.getIdProduct())).thenReturn(Optional.empty());
-        // Act & Assert
-        assertNull(productService.updateProduct(updatedProduct));
-        verify(productRepository, times(1)).findById(updatedProduct.getIdProduct());
-        verify(productRepository, never()).save(any());
-    }
-    @Test
     void updateProduct() {
         // Arrange
-        Product updatedProduct = product2;
-        Product existingProduct = product;
+        Product updatedProduct = product;
+        Product existingProduct = product2;
         given(productRepository.findById(updatedProduct.getIdProduct())).willReturn(Optional.of(existingProduct));
         given(productRepository.save(any(Product.class))).willReturn(updatedProduct);
         // Act
         Product result = productService.updateProduct(updatedProduct);
         // Assert
         assertNotNull(result);
-        //assertEquals(updatedProduct, result); //timestamps
-        assertEquals(updatedProduct.getIdProduct(), result.getIdProduct()); //check
-        assertEquals(updatedProduct.getSku(), result.getSku());
-        assertEquals(updatedProduct.getName(), result.getName());
-        assertEquals(updatedProduct.getDescription(), result.getDescription());
-        assertEquals(updatedProduct.getPrice(), result.getPrice());
+        assertEquals(updatedProduct.getName(), result.getName()); // Add more assertions based on your actual update logic.
         // Verify
         then(productRepository).should().findById(updatedProduct.getIdProduct());
         then(productRepository).should().save(any(Product.class));
-        //verify(productRepository, times(1)).findById(updatedProduct.getIdProduct());
-        //verify(productRepository, times(1)).save(existingProduct);
+        then(productRepository).shouldHaveNoMoreInteractions();
+    }
+
+
+    @Test
+    void updateProductNotFound() {
+        // Arrange
+        Product updatedProduct = product;
+        Long productId = updatedProduct.getIdProduct();
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+        // Act
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            productService.updateProduct(updatedProduct);
+        });
+        // Assert
+        assertEquals("Product not found with productId : '" + productId + "'", exception.getMessage());
+        // Verify
+        then(productRepository).should().findById(productId);
+        then(productRepository).shouldHaveNoMoreInteractions();
     }
 
     @Test

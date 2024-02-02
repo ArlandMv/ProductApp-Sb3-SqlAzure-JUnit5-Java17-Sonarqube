@@ -36,26 +36,24 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Optional<Product> getProductById(Long id) {
-        return productRepository.findById(id);
-        /* return Optional.ofNullable(productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", id)));*/
+        // return productRepository.findById(id);
+        return Optional.ofNullable(productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", id)));
     }
 
     @Override
     public Product updateProduct(@Valid Product updatedProduct) {
         Product existing = productRepository.findById(updatedProduct.getIdProduct())
-                .orElseThrow(() -> new ResourceNotFoundException());
-        if(existing!=null){
-            existing.setSku(updatedProduct.getSku());
-            existing.setName(updatedProduct.getName());
-            existing.setDescription(updatedProduct.getDescription());
-            existing.setPrice(updatedProduct.getPrice());
-            existing.setImageUrl(updatedProduct.getImageUrl());
-            existing.prePersist();
-            return productRepository.save(existing);
-        } else {
-            return null;
-        }
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", updatedProduct.getIdProduct()));
+
+        existing.setSku(updatedProduct.getSku());
+        existing.setName(updatedProduct.getName());
+        existing.setDescription(updatedProduct.getDescription());
+        existing.setPrice(updatedProduct.getPrice());
+        existing.setImageUrl(updatedProduct.getImageUrl());
+        existing.prePersist();
+
+        return productRepository.save(existing);
     }
 
     @Override
