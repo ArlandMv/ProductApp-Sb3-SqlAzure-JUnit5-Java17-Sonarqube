@@ -60,14 +60,14 @@ public class ProductController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        try {
+        productService.deleteById(id);
+        return ResponseEntity.noContent().build();
+        /*try {
             productService.deleteById(id);
             return ResponseEntity.noContent().build(); //204
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.notFound().build();
-        }
-        /*productService.deleteById(id);
-        return ResponseEntity.noContent().build();  */
+        }  */
     }
 
 

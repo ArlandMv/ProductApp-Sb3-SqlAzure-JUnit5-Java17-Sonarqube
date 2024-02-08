@@ -1,0 +1,10 @@
+com\mvprojects\SB3AzureMySQLcrud\exceptions\ResourceNotFoundException.class
+com\mvprojects\SB3AzureMySQLcrud\Sb3AzureMySqLcrudApplication.class
+com\mvprojects\SB3AzureMySQLcrud\domain\repository\ProductRepository.class
+com\mvprojects\SB3AzureMySQLcrud\exceptions\GlobalExceptionHandler.class
+com\mvprojects\SB3AzureMySQLcrud\persistence\entity\Product.class
+com\mvprojects\SB3AzureMySQLcrud\config\CorsConfig.class
+com\mvprojects\SB3AzureMySQLcrud\persistence\entity\Product$ProductBuilder.class
+com\mvprojects\SB3AzureMySQLcrud\domain\service\ProductServiceImp.class
+com\mvprojects\SB3AzureMySQLcrud\domain\service\ProductService.class
+com\mvprojects\SB3AzureMySQLcrud\persistence\controller\ProductController.class

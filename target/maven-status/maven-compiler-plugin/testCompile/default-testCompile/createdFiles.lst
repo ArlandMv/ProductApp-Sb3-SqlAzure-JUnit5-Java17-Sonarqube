@@ -1,0 +1,4 @@
+com\mvprojects\SB3AzureMySQLcrud\persistence\controller\ProductControllerTest.class
+com\mvprojects\SB3AzureMySQLcrud\domain\service\ProductServiceImpTest.class
+com\mvprojects\SB3AzureMySQLcrud\Sb3AzureMySqLcrudApplicationTests.class
+com\mvprojects\SB3AzureMySQLcrud\domain\repository\ProductRepositoryTest.class

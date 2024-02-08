@@ -51,8 +51,13 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.builder().idProduct(1L).name("productX").price(new BigDecimal(1000)).build();
-        product2 = Product.builder().idProduct(2L).name("productY").price(new BigDecimal(2000)).build();
+        product = Product.builder()
+                .idProduct(1L)
+                .sku("sku123")
+                .name("productX")
+                .price(new BigDecimal(1000))
+                .build();
+        product2 = Product.builder().idProduct(2L).sku("sku456").name("productY").price(new BigDecimal(2000)).build();
     }
 
     @Test
@@ -107,6 +112,7 @@ class ProductControllerTest {
     void productController_updateProduct_ReturnUpdated() throws Exception {
         Product updatedProduct = Product.builder()
                 .idProduct(1L)
+                .sku("skuABC")
                 .name("Updated Product")
                 .price(new BigDecimal(20.0))
                 .build();
